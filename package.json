@@ -1,6 +1,6 @@
 {
   "name": "generate-revite-plugin",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Revite plugin boilerplate without typescript bits.",
   "type": "module",
   "scripts": {
