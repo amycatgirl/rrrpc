@@ -1,3 +1,15 @@
+# rrRPC
+
+A hacky way of bringing your Discord RPC to Revolt
+
+Installation instructions below, pre-built plugin on `target/plugin.json` and/or GitHub Releases
+
+> [!NOTE]
+> You **MUST** have arRPC running before installing the plugin. It does not reconnect to the websocket once connection is lost/hasn't been stablished.
+> This feature will come at a later date.
+
+---
+
 # Revite Plugin Boilerplate
 
 > ## Beware that plugins *will* break whenever the [client rewrite](https://github.com/revoltchat/frontend) is generaly available.
@@ -13,16 +25,27 @@ A nix shell is available with this repo, to use it, run `nix-shell`, the shell c
 
 If you don't want to use `nix`, you need to have `node` and `pnpm ` installed. Instalation through `corepack` is highly recommended.
 
-## Building
+### Building
 
 To build, use the following command.
 
 
 ```bash
-
 pnpm build
 
 # Or if you want an unminified build
 # pnpm build:dev
-  
 ```
+
+### Installing
+
+Installing a plugin is pretty easy. You need to enable the [Experimental Plugin API] experiment in the Experiments settings tab, then open console and
+follow the instructions:
+
+1. Copy the built plugin in the `target/plugin.json` file
+2. Open DevTools <kbd>Control + Shift + i</kbd> and click the "Console" tab
+3. Type the following, replacing `...` with the contents of the previously copied file:
+```js
+state.plugins.add(...)
+```
+4. You should see that your status has changed to your discord RPC!
