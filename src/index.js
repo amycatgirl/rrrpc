@@ -1,9 +1,9 @@
 () => {
 	const arrpcSocket = new WebSocket("ws://127.0.0.1:1337")
-	let currentData;
+	let currentData
 
 	arrpcSocket.onmessage = async (x) => {
-		currentData = JSON.parse(x.data);
+		currentData = JSON.parse(x.data)
 	}
 
 	async function fetchAppInfo(appId) {
@@ -25,18 +25,33 @@
 		});
 
 		starting = client.user.status.text
+		let lastActivityUpdate = {}
+		let lastStatus = ""
+		let currentAppInfo = {}
 
 		intrvl = setInterval(async () => {
-			if (currentData && currentData.activity && currentData.activity.application_id) {
-				const appinfo = await fetchAppInfo(currentData.activity.application_id);
-				await client.api.patch("/users/@me", {
-					status: {
-						text: `(${appinfo.name}) ${currentData.activity.details ?? ""} ${currentData.activity.state ?? ""}`
-					}
+			lastStatus = client.user.status.text
 
-				})
+			if (currentData && currentData.activity) {
+				if (lastActivityUpdate?.application_id !== currentData.activity.application_id) {
+					// don't constantly bombard discord's servers
+					currentAppInfo = await fetchAppInfo(currentData.activity.application_id);
+				}
+				
+				lastActivityUpdate = currentData.activity
+				const generatedStatusText = `(${currentAppInfo.name}) ${currentData.activity.details ?? ""} ${currentData.activity.state ?? ""}`
+
+				if (lastStatus !== generatedStatusText) {
+					// same thing with revolt lmao
+					await client.api.patch("/users/@me", {
+						status: {
+							text: generatedStatusText
+						}
+
+					})
+				}
 			} else {
-				if (client.user.status.text !== starting) {
+				if (client.user.status.text !== starting && lastStatus !== client.user.status.text) {
 					await client.api.patch("/users/@me", {
 						status: {
 							text: starting
@@ -52,7 +67,7 @@
 
 	return {
 		onUnload: async () => {
-			await client.api.patch("/users/@me", { status: { text: starting } });
+			await client.api.patch("/users/@me", { status: { text: starting } })
 			clearInterval(intrvl)
 			arrpcSocket.close(1000, "Plugin unloaded.")
 		}
