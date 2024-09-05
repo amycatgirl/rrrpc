@@ -8,6 +8,8 @@ Installation instructions below, pre-built plugin on `target/plugin.json` and/or
 > You **MUST** have arRPC running before installing the plugin. It does not reconnect to the websocket once connection is lost/hasn't been stablished.
 > This feature will come at a later date.
 
+Original boilerplate README below.
+
 ---
 
 # Revite Plugin Boilerplate
